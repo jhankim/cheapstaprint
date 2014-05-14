@@ -13,15 +13,16 @@ if ($loop) set_time_limit(0);   											// ~ No time execution limit
 $tag="";																				// ==== Tag to search with															
 $searchByLocation=FALSE;											// Locations ---> Get LAT, LNG ---> query Instagram API
 $searchByLocation_ID=TRUE;										// NOTE: If $searchByLocation == TRUE then this value is ignored
-$footer_picture_name="creature_seattle";		// File type must be JPG
-$font = 'Fonts/GeosansLight.ttf';		
+$footer_picture_name="olapic_logo";		// File type must be JPG
+$font = 'Fonts/lato-light-webfont.ttf';		
 
 $footerDir="Footer_Pictures/";
 $srcDir="Original_Instagram_Pictures/";							// ==== Path to Folder which stores original pictures from Instagram
-$dstDir="Completed_Pictures/seattle";										// ==== Path to Folder which stores the final pictures after combining	
+$dstDir="Completed_Pictures/";										// ==== Path to Folder which stores the final pictures after combining	
 $interval=30;           															// ==== Interval time (in seconds) - should be >= 20
+$photoNum=1;
 
-$clientId="INSERT YOUR INSTAGRAM CLIENTID";		// ==== Instagram Client ID (need to register with Instagram to get it)
+$clientId="f22871d8d7bc4351960fbcd141ce7eb7";		// ==== Instagram Client ID (need to register with Instagram to get it)
 if ($tag==""){
 	$tag=$_GET['tag'];															// ~ If there is no tag value here then get it from Web browser
 	$searchByLocation=$_GET['searchByLocation'];
@@ -64,7 +65,7 @@ if (!$tag){ ?>
 		$avatarArr=array();
 			$realAvatarArray=array();
 		$timeArr=array();
-		for ($i=0;$i<4;$i++){
+		for ($i=0;$i<$photoNum;$i++){
 			$imgArr[]=$content->data[$i]->images->low_resolution->url;		
 			$userArr[]=$content->data[$i]->user->username;
 			$avatarArr[]=$content->data[$i]->user->profile_picture;
@@ -102,14 +103,14 @@ if (!$tag){ ?>
 		// ==================== CREATE IMAGE FILES ==================	
 		$originFrame = imagecreatefromstring(file_get_contents("frame.jpg"));		
 
-		for ($i=0;$i<4;$i++){
+		for ($i=0;$i<$photoNum;$i++){
 			if ($ignoredImageArray[$i]) continue;  //ignore image if in source
 			$frame=$originFrame; 			// Clone new frame
 			
 			// INSERT INSTAGRAM		
 			imagecopymerge($frame, $realImageArray[$i], 17, 60, 0, 0, 306, 306, 100); //Params =(background img, img upper, BG x, BG y, Upper X-Y-W-H, alpha)
 			
-			// INSER USERNAME			
+			// INSERT USERNAME			
 			$username_img = imagecreatetruecolor(200, 30);				
 			$white = imagecolorallocate($username_img, 255, 255, 255);
 			$grey = imagecolorallocate($username_img, 128, 128, 128);
@@ -125,7 +126,7 @@ if (!$tag){ ?>
 			$time_img=imagecreatetruecolor(90, 30);
 			imagefilledrectangle($time_img, 0, 0, 90, 30, $white);
 			$time=$timeArr[$i];
-			imagettftext($time_img, 11, 0, 11, 21, $black, $font, $time); // Add the text		
+			imagettftext($time_img, 11, 0, 0, 21, $black, $font, $time); // Add the text		
 			imagecopymerge($frame, $time_img, 245, 22, 0, 0, 90, 25, 100);
 			
 			// INSERT AVATAR
@@ -136,7 +137,7 @@ if (!$tag){ ?>
 			imagecopymerge($frame, $footer_pictures, 0, 370, 0, 0, 340, 140, 100); 
 			
 			 # Save the image to a file
-			imagejpeg($frame, $dstDir."/".md5($imgArr[$i]).".jpg");
+			imagejpeg($frame, $dstDir."/".md5($imgArr[$i]).".jpg", 100);
 		}
 		if (!$loop) break;
 			else sleep($interval);
@@ -144,10 +145,10 @@ if (!$tag){ ?>
 	
 	// =========== OUTPUT TO WEB BROWSER ============
 	echo "<table bgcolor='#ccc'><tr>";
-	for ($i=0;$i<4;$i++)
+	for ($i=0;$i<$photoNum;$i++)
 		echo "<td><img src='".$dstDir."/".md5($imgArr[$i]).".jpg"."'/></td>";	
 	echo "</tr></table>";
 	
-	 # Output straight to the browser.
-	 //imagepng($image);
+	# Output straight to the browser.
+	// imagepng($image);
 }

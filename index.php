@@ -22,7 +22,7 @@ $dstDir="Completed_Pictures/";										// ==== Path to Folder which stores the 
 $interval=30;           															// ==== Interval time (in seconds) - should be >= 20
 $photoNum=1;
 
-$clientId="f22871d8d7bc4351960fbcd141ce7eb7";		// ==== Instagram Client ID (need to register with Instagram to get it)
+$clientId="xxx";		// ==== Instagram Client ID (need to register with Instagram to get it)
 if ($tag==""){
 	$tag=$_GET['tag'];															// ~ If there is no tag value here then get it from Web browser
 	$searchByLocation=$_GET['searchByLocation'];
